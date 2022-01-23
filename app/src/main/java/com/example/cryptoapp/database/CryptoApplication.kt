@@ -15,7 +15,7 @@ class CryptoApplication: Application() {
         db = Room.databaseBuilder(
             this,
             DB::class.java,
-            "cryptoinvestcenter"
+            "cryptoapp"
         ).build()
 
         prefs = Prefs(applicationContext)
