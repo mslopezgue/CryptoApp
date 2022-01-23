@@ -9,7 +9,16 @@ import kotlinx.coroutines.withContext
 import retrofit2.Response
 
 class MonedaService {
+        private val retrofit = RetrofitHelper.obtenCliente()
 
+        suspend fun getMonedas(): List<Moneda> {
+            return withContext(Dispatchers.IO) {
+                val response = retrofit.create(InterfaceService::class.java).getAll()
+                response.body() ?: emptyList()
+            }
+        }
+
+    }
     private val retrofit = RetrofitHelper.obtenCliente()
 
 
