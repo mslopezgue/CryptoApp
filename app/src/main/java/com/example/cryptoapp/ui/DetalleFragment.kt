@@ -29,8 +29,6 @@ class DetalleFragment : Fragment() {
 
            vmodel = ViewModelProvider(this).get(MonedaViewModel::class.java)
 
-           //recibir lo que llega de la lista de las noticias
-
            var moneda = arguments?.getSerializable("moneda") as Moneda
 
            //asignar lo que recibo con el binding a cada vista
