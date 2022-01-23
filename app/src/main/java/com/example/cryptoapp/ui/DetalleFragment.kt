@@ -38,15 +38,13 @@ class DetalleFragment : Fragment() {
            with(binding) {
                tvNameMoneda.text = moneda.name
                tvSymbolDetalle.text=moneda.symbol
-               rank.text = moneda.rank
+               rank.text = moneda.rank.toString()
                status.text = moneda.status
-               price.text = moneda.price
+               price.text = moneda.price.toString()
                date.text = moneda.price_date
 
                Picasso.get().load(moneda.logo_url).fit().centerCrop()
-                   .placeholder(R.drawable.user_placeholder)
-                   .error(R.drawable.user_placeholder_error)
-                   .into(binding.ivDetalle)
+                      .into(binding.ivDetalle)
            }
 
                binding.btnGetInfo.setOnClickListener() {
@@ -56,7 +54,7 @@ class DetalleFragment : Fragment() {
                    compartirIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("jan@example.com")) // recipients
                    compartirIntent.putExtra(Intent.EXTRA_SUBJECT, "Email subject")
                    compartirIntent.putExtra(Intent.EXTRA_TEXT,"Hola " +
-                           "Quisiera pedir información sobre esta moneda " + "\n ${moneda.url},"
+                           "Quisiera pedir información sobre esta moneda " + binding.tvNameMoneda.text
                            + "me gustaría que me contactaran a este correo o al " +
                            "siguiente número _________, Quedo atento."
                )
