@@ -3,6 +3,7 @@ package com.example.cryptoapp.repositorio
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import com.example.cryptoapp.MonedaProvider
 import com.example.cryptoapp.dao.DetalleMonedaEntity
 import com.example.cryptoapp.dao.MonedaDao
 import com.example.cryptoapp.dao.MonedaEntity
@@ -21,6 +22,12 @@ import kotlinx.coroutines.flow.flowOn
 
 class Repositorio {
     private val monedaService = MonedaService()
+
+    suspend fun getAll():List<Moneda>{
+        val response = api.getQuotes()
+        MonedaProvider.quotes = response
+        return response
+    }
     var listaDeArticulos = MutableLiveData<List<Moneda>>()
 
     fun getAll(): Flow<List<Moneda>> = flow {

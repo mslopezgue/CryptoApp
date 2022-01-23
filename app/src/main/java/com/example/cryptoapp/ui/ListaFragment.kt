@@ -31,7 +31,7 @@ class ListaFragment : Fragment() {
 
         vmodel = ViewModelProvider(this).get(MonedaViewModel::class.java)
 
-        //val recycler = binding.rvNoticias
+
         val adapter = MonedaAdapter()
 
         //recycler.layoutManager = LinearLayoutManager(requireContext())
