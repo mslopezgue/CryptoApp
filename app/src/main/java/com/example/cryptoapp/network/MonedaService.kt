@@ -12,8 +12,9 @@ class MonedaService {
 
     private val retrofit = RetrofitHelper.obtenCliente()
 
+
     suspend fun getMonedas(): Response<List<Moneda>> {
-        return  retrofit.create(InterfaceService::class.java).getAll()
+        return  retrofit.create(InterfaceService::class.java).
         }
 
     suspend fun getMoneda(id:String): Response<DetalleMoneda> {

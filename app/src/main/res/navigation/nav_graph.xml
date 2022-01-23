@@ -16,7 +16,8 @@
         android:label="lista_fragment"
         tools:layout="@layout/fragment_lista" >
         <action
-            android:id="@+id/action_listaFragment_to_articuloFragment"
+            android:id="@+id/action_listaFragment_to_detalleFragment"
             app:destination="@id/detalleFragment" />
-            </fragment>
+
+    </fragment>
 </navigation>

@@ -2,6 +2,7 @@ package com.example.cryptoapp.repositorio
 
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import com.example.cryptoapp.dao.DetalleMonedaEntity
 import com.example.cryptoapp.dao.MonedaDao
 import com.example.cryptoapp.dao.MonedaEntity
@@ -20,61 +21,64 @@ import kotlinx.coroutines.flow.flowOn
 
 class Repositorio {
     private val monedaService = MonedaService()
+    var listaDeArticulos = MutableLiveData<List<Moneda>>()
 
     fun getAll(): Flow<List<Moneda>> = flow {
-    while(true)
-    {
-        val monedaResponse = kotlin.runCatching { monedaService.getMonedas() }
+        while (true) {
+            val monedaResponse = kotlin.runCatching { monedaService.getMonedas() }
 
-        monedaResponse.onSuccess {
-            if(it.body()!=null)
-            {
-                db.monedaDAO().insertMonedas(MonedaConverters.converterMonedasEntity(it.body()!!))
+            monedaResponse.onSuccess {
+                if (it.body() != null) {
+                    db.monedaDAO()
+                        .insertMonedas(MonedaConverters.converterMonedasEntity(it.body()!!))
+                }
             }
+
+            monedaResponse.onFailure {
+                Log.d("Error Moneda", it.toString())
+            }
+
+            val monedasEntity: List<MonedaEntity> = db.monedaDAO().getAll()
+
+            if (monedasEntity != null) {
+                emit(MonedaConverters.converterMonedas(monedasEntity))
+            }
+
+            delay(5000)
         }
 
-        monedaResponse.onFailure {
-            Log.d("Error Moneda", it.toString())
+    }.flowOn(Dispatchers.IO)
+
+    fun getDetailMoneda(id: String): Flow<DetalleMoneda> = flow {
+        while (true) {
+            val monedaResponse = kotlin.runCatching { monedaService.getMoneda(id) }
+
+            monedaResponse.onSuccess {
+                Log.d("DetalleMoneda", it.body().toString())
+                if (it.body() != null) {
+                    db.monedaDAO()
+                        .insertDetailMoneda(MonedaConverters.converterDetailMonedaEntity(it.body()!!))
+                }
+            }
+
+            monedaResponse.onFailure {
+                Log.d("ErrorDetalleMoneda", it.toString())
+            }
+
+            val detailMonedaEntity: DetalleMonedaEntity = db.monedaDAO().getDetailMoneda(id)
+
+            if (detailMonedaEntity != null) {
+                emit(MonedaConverters.converterDetailMoneda(detailMonedaEntity))
+            }
+
+            delay(5000)
         }
 
-        val monedasEntity: List<MonedaEntity> = db.monedaDAO().getAll()
+    }.flowOn(Dispatchers.IO)
 
-        if(monedasEntity!=null)
-        {
-            emit(MonedaConverters.converterMonedas(monedasEntity))
-        }
-
-        delay(5000)
+    fun exponeNoticiasDeLaApi_EnRepo(): MutableLiveData<List<Moneda>> {
+        Log.v("exponeNoticiasDeLaApi_EnRepo", listaDeArticulos.toString())
+        return listaDeArticulos
     }
 
-}.flowOn(Dispatchers.IO)
-
-fun getDetailMoneda(id:String): Flow<DetalleMoneda> = flow {
-    while(true)
-    {
-        val monedaResponse = kotlin.runCatching { monedaService.getMoneda(id) }
-
-        monedaResponse.onSuccess {
-            Log.d("DetalleMoneda", it.body().toString())
-            if(it.body()!=null)
-            {
-                db.monedaDAO().insertDetailMoneda(MonedaConverters.converterDetailMonedaEntity(it.body()!!))
-            }
-        }
-
-        monedaResponse.onFailure {
-            Log.d("ErrorDetalleMoneda", it.toString())
-        }
-
-        val detailMonedaEntity: DetalleMonedaEntity = db.monedaDAO().getDetailMoneda(id)
-
-        if(detailMonedaEntity!=null)
-        {
-            emit(MonedaConverters.converterDetailMoneda(detailMonedaEntity))
-        }
-
-        delay(5000)
-    }
-
-}.flowOn(Dispatchers.IO)
 }

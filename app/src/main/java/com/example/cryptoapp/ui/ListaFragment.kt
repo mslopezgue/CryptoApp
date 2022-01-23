@@ -18,45 +18,49 @@ import com.example.cryptoapp.model.Moneda
 
 
 class ListaFragment : Fragment() {
-    private var b: FragmentListaBinding? = null
-    private val binding get() = b!!
-    private lateinit var monedaViewModel: MonedaViewModel
+    private var _binding: FragmentListaBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var vmodel: MonedaViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        b = FragmentListaBinding.inflate(inflater, container, false)
+        _binding = FragmentListaBinding.inflate(inflater, container, false)
 
-        monedaViewModel = ViewModelProvider(this).get(MonedaViewModel::class.java)
+        vmodel = ViewModelProvider(this).get(MonedaViewModel::class.java)
+
+        //val recycler = binding.rvNoticias
         val adapter = MonedaAdapter()
 
+        //recycler.layoutManager = LinearLayoutManager(requireContext())
         with(binding)
         {
             rvLista.layoutManager = LinearLayoutManager(context)
             rvLista.adapter = adapter
-
-             adapter.setOnItemClickListener(object : MonedaAdapter.OnClickListener {
-                override fun onClickItem(moneda: Moneda) {
-
+            vmodel.monedas()
+            adapter.setOnItemClickListener(object : MonedaAdapter.OnClickListener {
+                override fun alClickearItem(moneda: Moneda) {
+                    //Listener para click en los objetos de la lista
 
                     var miBundle = Bundle()
                     miBundle.putSerializable("moneda", moneda)
 
-                    findNavController().navigate(R.id.action_listaFragment_to_articuloFragment, miBundle)
+                    findNavController().navigate(R.id.action_listaFragment_to_detalleFragment, miBundle)
                 }
             })
+
+
         }
 
-        monedaViewModel.exponeDatosDeDB().observe(viewLifecycleOwner, Observer {
+        vmodel.exponeNoticiasDeLaApi_EnVM().observe(viewLifecycleOwner, Observer {
 
-            Log.v("RecyclerViewMoneda", it.toString())
+            Log.v("RecyclerViewNoticias", it.toString())
             adapter.setMoneda(it)
 
         })
 
-        return binding.root
-
+         return binding.root
     }
 }
