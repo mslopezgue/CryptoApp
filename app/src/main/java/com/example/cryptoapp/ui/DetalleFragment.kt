@@ -49,17 +49,6 @@ class DetalleFragment : Fragment() {
                    .into(binding.ivDetalle)
            }
 
-           // De imagen a navegador para ver la noticia completa
-
-           binding.ivDetalle.setOnClickListener(View.OnClickListener {
-               val webIntent: Intent = Uri.parse("${moneda.url}").let { webpage ->
-                   Intent(Intent.ACTION_VIEW, webpage)
-
-               }
-
-               startActivity(webIntent)
-
-           })
                binding.btnGetInfo.setOnClickListener() {
                val compartirIntent = Intent()
                    compartirIntent.type = "text/plain"
