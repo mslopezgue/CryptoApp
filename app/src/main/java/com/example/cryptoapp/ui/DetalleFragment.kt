@@ -1,14 +1,19 @@
 package com.example.cryptoapp.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import com.example.cryptoapp.MonedaProvider
 import com.example.cryptoapp.MonedaViewModel
 import com.example.cryptoapp.R
 import com.example.cryptoapp.databinding.FragmentDetalleBinding
+import com.example.cryptoapp.model.Moneda
+import com.squareup.picasso.Picasso
 
 
 class DetalleFragment : Fragment() {
@@ -23,31 +28,31 @@ class DetalleFragment : Fragment() {
     ): View? {
         b = FragmentDetalleBinding.inflate(inflater, container, false)
 
-           vmodel = MonedaProvider(this).get(MonedaViewModel::class.java)
+           vmodel = ViewModelProvider(this).get(MonedaViewModel::class.java)
 
            //recibir lo que llega de la lista de las noticias
 
-           var noticia = arguments?.getSerializable("noticia") as Article
+           var moneda = arguments?.getSerializable("moneda") as Moneda
 
            //asignar lo que recibo con el binding a cada vista
 
            with(binding) {
-               tvAutor.text = noticia.author
-               tvFechaPublicaiN.text = noticia.publishedAt
-               tvFuente.text = noticia.source.name
-               tvTituloDetalle.text = noticia.title
-               cuerpoNoticia.text = noticia.description
+               tvAutor.text = moneda.author
+               tvFechaPublicaiN.text = moneda.publishedAt
+               tvFuente.text = moneda.source.name
+               tvTituloDetalle.text = moneda.title
+               cuerpoNoticia.text = moneda.description
 
-               Picasso.get().load(noticia.urlToImage).fit().centerCrop()
+               Picasso.get().load(moneda.urlToImage).fit().centerCrop()
                    .placeholder(R.drawable.user_placeholder)
                    .error(R.drawable.user_placeholder_error)
-                   .into(binding.ivImagenDetalle)
+                   .into(binding.ivDetalle)
            }
 
            // De imagen a navegador para ver la noticia completa
 
-           binding.ivImagenDetalle.setOnClickListener(View.OnClickListener {
-               val webIntent: Intent = Uri.parse("${noticia.url}").let { webpage ->
+           binding.ivDetalle.setOnClickListener(View.OnClickListener {
+               val webIntent: Intent = Uri.parse("${moneda.url}").let { webpage ->
                    Intent(Intent.ACTION_VIEW, webpage)
 
                }
@@ -55,30 +60,21 @@ class DetalleFragment : Fragment() {
                startActivity(webIntent)
 
            })
-
-           //Configurar Boton compartir
-
-           binding.btnCompartir.setOnClickListener() {
-
+               binding.btnGetInfo.setOnClickListener() {
                val compartirIntent = Intent()
-               compartirIntent.action = Intent.ACTION_SEND
-               compartirIntent.putExtra(
-                   Intent.EXTRA_TEXT,
-                   "Hola, me pareció que esta noticia podria interesarte: " +
-                           "\n ${noticia.url}"
+                   compartirIntent.type = "text/plain"
+                   compartirIntent.action = Intent.ACTION_SEND
+                   compartirIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("jan@example.com")) // recipients
+                   compartirIntent.putExtra(Intent.EXTRA_SUBJECT, "Email subject")
+                   compartirIntent.putExtra(Intent.EXTRA_TEXT,"Hola " +
+                           "Quisiera pedir información sobre esta moneda " + "\n ${moneda.url},"
+                           + "me gustaría que me contactaran a este correo o al " +
+                           "siguiente número _________, Quedo atento."
                )
-               compartirIntent.type = "text/plain"
+                   compartirIntent.type = "text/plain"
                startActivity(compartirIntent)
 
            }
-
-           return binding.root
-       }
-
-
+       return binding.root
+    }
 }
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detalle, container, false)
-    }
-
-    }
