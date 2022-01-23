@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.example.cryptoapp.MonedaProvider
 import com.example.cryptoapp.MonedaViewModel
 import com.example.cryptoapp.R
 import com.example.cryptoapp.databinding.FragmentDetalleBinding
@@ -37,13 +36,14 @@ class DetalleFragment : Fragment() {
            //asignar lo que recibo con el binding a cada vista
 
            with(binding) {
-               tvAutor.text = moneda.author
-               tvFechaPublicaiN.text = moneda.publishedAt
-               tvFuente.text = moneda.source.name
-               tvTituloDetalle.text = moneda.title
-               cuerpoNoticia.text = moneda.description
+               tvNameMoneda.text = moneda.name
+               tvSymbolDetalle.text=moneda.symbol
+               rank.text = moneda.rank
+               status.text = moneda.status
+               price.text = moneda.price
+               date.text = moneda.price_date
 
-               Picasso.get().load(moneda.urlToImage).fit().centerCrop()
+               Picasso.get().load(moneda.logo_url).fit().centerCrop()
                    .placeholder(R.drawable.user_placeholder)
                    .error(R.drawable.user_placeholder_error)
                    .into(binding.ivDetalle)
